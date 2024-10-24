@@ -10,11 +10,11 @@ public class GameRequest
     
     public int Turn { get; }
 
-    public IBoard Board { get; }
+    public Board Board { get; }
 
-    public ISnake You { get; }
+    public Snake You { get; }
     
-    public GameRequest(Game game, int turn, IBoard board, ISnake you)
+    public GameRequest(Game game, int turn, Board board, Snake you)
     {
         Game = game;
         Turn = turn;

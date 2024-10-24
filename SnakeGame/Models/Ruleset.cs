@@ -8,9 +8,9 @@ public class Ruleset
     
     public string Version { get; }
     
-    public ISettings Settings { get; }
+    public StandardSettings Settings { get; }
     
-    public Ruleset(string name, string version, ISettings settings)
+    public Ruleset(string name, string version, StandardSettings settings)
     {
         Name = name;
         Version = version;

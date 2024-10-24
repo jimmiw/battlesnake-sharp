@@ -2,7 +2,7 @@ namespace SnakeGame.Models.Snakes;
 
 using Boards;
 
-public class Snake : ISnake
+public class Snake
 {
     public string? Id { get; set; }
     
@@ -26,6 +26,9 @@ public class Snake : ISnake
     {
     }
     
+    /// <summary>
+    /// Checks if the snake's body is on the given position
+    /// </summary>
     public bool IsOnPosition(Position position)
     {
         throw new NotImplementedException();

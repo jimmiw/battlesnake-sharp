@@ -7,8 +7,8 @@ using Models.Snakes;
 
 public class ClassicEngine : IEngine
 {
-    public string FindMove(Game game, int turn, IBoard board, ISnake you)
+    public string FindMove(Game game, int turn, Board board, Snake you)
     {
-        throw new NotImplementedException();
+        return Direction.Down;
     }
 }

@@ -1,6 +1,6 @@
 namespace SnakeGame.Models.RulesetSettings;
 
-public class StandardSettings : ISettings
+public class StandardSettings
 {
     public int FoodSpawnChange { get; set; }
     
