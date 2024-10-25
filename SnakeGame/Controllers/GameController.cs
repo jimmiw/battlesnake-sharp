@@ -36,7 +36,7 @@ public class GameController : ControllerBase
     }
     
     [HttpPost("/start")]
-    public IActionResult Start()
+    public async Task<IActionResult> Start()
     {
         logger.LogInformation("/start hit");
         
@@ -44,7 +44,7 @@ public class GameController : ControllerBase
     }
 
     [HttpPost("/move")]
-    public IActionResult Move(GameRequest requestBody)
+    public async Task<IActionResult> Move(GameRequest requestBody, CancellationToken cancellationToken)
     {
         logger.LogInformation("/move hit");
         

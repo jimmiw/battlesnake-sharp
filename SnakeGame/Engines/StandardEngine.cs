@@ -7,8 +7,8 @@ using Models.Snakes;
 
 public class StandardEngine : IEngine
 {
-    public string FindMove(Game game, int turn, Board board, Snake you)
+    public async Task<Direction> FindMove(Game game, int turn, Board board, Snake you)
     {
-        return Direction.Down;
+        return new Direction(Direction.Down);
     }
 }

@@ -6,7 +6,7 @@ namespace SnakeGame.Engines;
 
 public class RoyaleEngine : IEngine
 {
-    public string FindMove(Game game, int turn, Board board, Snake you)
+    public async Task<Direction> FindMove(Game game, int turn, Board board, Snake you)
     {
         throw new NotImplementedException();
     }

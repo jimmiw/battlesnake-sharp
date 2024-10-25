@@ -9,5 +9,5 @@ public interface IEngine
     /// <summary>
     /// Finds a move for your snake, using the current game state
     /// </summary>
-    public string FindMove(Game game, int turn, Board board, Snake you);
+    public Task<Direction> FindMove(Game game, int turn, Board board, Snake you);
 }

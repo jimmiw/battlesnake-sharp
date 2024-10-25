@@ -6,19 +6,11 @@ using Models.Snakes;
 
 public class GameRequest
 {
-    public Game Game { get; }
+    public Game Game { get; set; }
     
-    public int Turn { get; }
+    public int Turn { get; set; }
 
-    public Board Board { get; }
+    public Board Board { get; set; }
 
-    public Snake You { get; }
-    
-    public GameRequest(Game game, int turn, Board board, Snake you)
-    {
-        Game = game;
-        Turn = turn;
-        Board = board;
-        You = you;
-    }
+    public Snake You { get; set; }
 }
