@@ -6,7 +6,7 @@ public class EngineFactory
     {
         return engineType switch
         {
-            EngineType.Classic => new ClassicEngine(),
+            EngineType.Standard => new StandardEngine(),
             EngineType.Royale => new RoyaleEngine(),
             EngineType.Constrictor => new ConstrictorEngine(),
             _ => throw new ArgumentOutOfRangeException(nameof(engineType), engineType, null)

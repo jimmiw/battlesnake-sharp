@@ -5,7 +5,7 @@ using Models;
 using Models.Boards;
 using Models.Snakes;
 
-public class ClassicEngine : IEngine
+public class StandardEngine : IEngine
 {
     public string FindMove(Game game, int turn, Board board, Snake you)
     {

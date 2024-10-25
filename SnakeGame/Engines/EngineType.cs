@@ -2,7 +2,7 @@ namespace SnakeGame.Engines;
 
 public class EngineType
 {
-    public const string Classic = "standard";
+    public const string Standard = "standard";
     public const string Royale = "royale";
     public const string Constrictor = "constrictor";
     
@@ -10,7 +10,7 @@ public class EngineType
     {
         return engineType switch
         {
-            Classic => "standard",
+            Standard => "standard",
             Royale => "royale",
             Constrictor => "constrictor",
             _ => throw new ArgumentOutOfRangeException(nameof(engineType), engineType, null)
