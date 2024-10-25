@@ -8,10 +8,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
-// add the game engine we are using
-// NOTE: this might need to change, based on the type of game that is being run
-builder.Services.AddScoped<IEngine, StandardEngine>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
