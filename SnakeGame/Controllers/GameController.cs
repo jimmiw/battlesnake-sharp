@@ -11,15 +11,10 @@ using Microsoft.AspNetCore.Mvc;
 public class GameController : ControllerBase
 {
     private readonly ILogger<GameController> logger;
-    private readonly IEngine engine;
 
-    /// <summary>
-    /// Initializes the controller, using a specified engine.
-    /// </summary>
-    public GameController(IEngine engine, ILogger<GameController> logger)
+    public GameController(ILogger<GameController> logger)
     {
         this.logger = logger;
-        this.engine = engine;
     }
     
     /// <summary>
@@ -53,8 +48,11 @@ public class GameController : ControllerBase
     {
         logger.LogInformation("/move hit");
         
+        // constructing the engine to use, using the map settings
+        var engine = EngineFactory.CreateEngine(EngineType.parseEngineType(requestBody.Game.Map));
+        
         return Ok(new {
-            move = this.engine.FindMove(requestBody.Game, requestBody.Turn, requestBody.Board, requestBody.You),
+            move = engine.FindMove(requestBody.Game, requestBody.Turn, requestBody.Board, requestBody.You),
             shout = "Hello" // optional
         });
     }
