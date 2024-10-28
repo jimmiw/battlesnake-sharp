@@ -2,7 +2,7 @@ namespace SnakeGame.Engines;
 
 public class EngineFactory
 {
-    public static IEngine CreateEngine(string engineType)
+    public static IEngine GetEngine(string engineType)
     {
         return engineType switch
         {
