@@ -49,10 +49,10 @@ public class GameController : ControllerBase
         logger.LogInformation("/move hit");
         
         // constructing the engine to use, using the map settings
-        var engine = EngineFactory.CreateEngine(EngineType.parseEngineType(requestBody.Game.Map));
+        var engine = EngineFactory.GetEngine(EngineType.parseEngineType(requestBody.Game.Map));
         
         return Ok(new {
-            move = engine.FindMove(requestBody.Game, requestBody.Turn, requestBody.Board, requestBody.You),
+            move = await engine.FindMove(requestBody.Game, requestBody.Turn, requestBody.Board, requestBody.You),
             shout = "Hello" // optional
         });
     }
