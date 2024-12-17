@@ -6,5 +6,5 @@ To start the snake, do the following:
 git pull
 docker build -t battlesnake .
 docker stop battlesnake
-docker run -dit --rm -p 5005:8080 battlesnake
+docker run -dit --rm --name battlesnake -p 5005:8080 battlesnake
 ```
