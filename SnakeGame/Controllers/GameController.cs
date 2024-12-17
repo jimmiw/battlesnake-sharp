@@ -50,10 +50,12 @@ public class GameController : ControllerBase
         
         // constructing the engine to use, using the map settings
         var engine = EngineFactory.GetEngine(EngineType.parseEngineType(requestBody.Game.Map));
+
+        var move = await engine.FindMove(requestBody.Game, requestBody.Turn, requestBody.Board, requestBody.You);
         
         return Ok(new {
-            move = await engine.FindMove(requestBody.Game, requestBody.Turn, requestBody.Board, requestBody.You),
-            shout = "Hello" // optional
+            move = move.ToString(),
+            shout = $"We'd be moving {move}"
         });
     }
 
