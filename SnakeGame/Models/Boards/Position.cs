@@ -36,6 +36,16 @@ public class Position
             _ => throw new ArgumentOutOfRangeException($"Given direction:{direction} is not valid")
         };
     }
+    
+    public static bool operator ==(Position a, Position b)
+    {
+        return a.X == b.X && a.Y == b.Y;
+    }
+
+    public static bool operator !=(Position a, Position b)
+    {
+        return !(a == b);
+    }
 
     public override string ToString()
     {
