@@ -34,7 +34,7 @@ public class StandardEngine : IEngine
         }
         else
         {
-            logger.LogInformation($"Found direction:{direction} in {10 - maxAttempts} attempts");
+            logger.LogInformation($"Found direction:{direction} in {9 - maxAttempts} attempts");
         }
         
         return direction;
