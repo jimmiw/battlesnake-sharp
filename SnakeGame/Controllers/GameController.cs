@@ -50,6 +50,8 @@ public class GameController : ControllerBase
     {
         logger.LogInformation("/move hit");
         
+        logger.LogInformation($"Board info: {requestBody.Board.Width}, {requestBody.Board.Height}");
+        
         // constructing the engine to use, using the map settings
         var engine = engineFactory.GetEngine(EngineType.parseEngineType(requestBody.Game.Map));
 

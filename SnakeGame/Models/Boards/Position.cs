@@ -36,4 +36,9 @@ public class Position
             _ => throw new ArgumentOutOfRangeException($"Given direction:{direction} is not valid")
         };
     }
+
+    public override string ToString()
+    {
+        return $"{X}, {Y}";
+    }
 }

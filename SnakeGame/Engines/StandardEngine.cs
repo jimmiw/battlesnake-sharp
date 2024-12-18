@@ -19,23 +19,28 @@ public class StandardEngine : IEngine
     {
         var direction = GetRandomDirection();
         var maxAttempts = 10;
+        var attempts = 1;
+        
+        logger.LogInformation($"Current position: {you.Head}");
         
         // checking if the new direction is out of bounds or if it's on the snake's body
-        while (maxAttempts > 0 && (board.IsOutOfBounds(you.Head + direction) || you.IsOnPosition(you.Head + direction)))
+        while (attempts < maxAttempts && (board.IsOutOfBounds(you.Head + direction) || you.IsOnPosition(you.Head + direction)))
         {
             direction = GetRandomDirection();
             // decrement the number of attempts, so we don't get stuck in an infinite loop
-            maxAttempts--;
+            attempts++;
         }
 
-        if (maxAttempts == 0)
+        if (attempts == maxAttempts)
         {
             logger.LogWarning("Could not find a valid direction after 10 attempts!");
         }
         else
         {
-            logger.LogInformation($"Found direction:{direction} in {9 - maxAttempts} attempts");
+            logger.LogInformation($"Found direction:{direction} in {attempts} attempts");
         }
+        
+        logger.LogInformation($"New position: {you.Head + direction}");
         
         return direction;
     }
