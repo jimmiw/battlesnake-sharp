@@ -56,7 +56,7 @@ public class GameController : ControllerBase
         var move = await engine.FindMove(requestBody.Game, requestBody.Turn, requestBody.Board, requestBody.You);
         
         return Ok(new {
-            move = move.ToString(),
+            move = move.ToString().ToLower(),
             shout = $"We'd be moving {move}"
         });
     }
