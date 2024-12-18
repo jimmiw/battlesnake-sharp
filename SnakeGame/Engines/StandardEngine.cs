@@ -7,7 +7,13 @@ using Models.Snakes;
 
 public class StandardEngine : IEngine
 {
+    private readonly ILogger<StandardEngine> logger;
     private static readonly Random RandomGenerator = new();
+    
+    public StandardEngine(ILogger<StandardEngine> logger)
+    {
+        this.logger = logger;
+    }
     
     public async Task<Direction> FindMove(Game game, int turn, Board board, Snake you)
     {
@@ -22,6 +28,15 @@ public class StandardEngine : IEngine
             maxAttempts--;
         }
 
+        if (maxAttempts == 0)
+        {
+            logger.LogWarning("Could not find a valid direction after 10 attempts!");
+        }
+        else
+        {
+            logger.LogInformation($"Found direction:{direction} in {10 - maxAttempts} attempts");
+        }
+        
         return direction;
     }
     
