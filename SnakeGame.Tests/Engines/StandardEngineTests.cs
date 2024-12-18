@@ -1,3 +1,5 @@
+using FakeItEasy;
+using Microsoft.Extensions.Logging;
 using SnakeGame.Engines;
 using SnakeGame.Models;
 using SnakeGame.Models.Boards;
@@ -11,7 +13,7 @@ public class StandardEngineTests
 
     public StandardEngineTests()
     {
-        _engine = new StandardEngine();
+        _engine = new StandardEngine(A.Fake<ILogger<StandardEngine>>());
     }
     
     [Fact]

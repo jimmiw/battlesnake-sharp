@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SnakeGame.Controllers;
+using SnakeGame.Engines;
 using SnakeGame.Models;
 using SnakeGame.Requests;
 
@@ -15,7 +16,8 @@ public class GameControllerTests
     {
         // Arrange
         var logger = A.Fake<ILogger<GameController>>();
-        var controller = new GameController(logger);
+        var engineFactory = A.Fake<EngineFactory>();
+        var controller = new GameController(engineFactory, logger);
 
         // Act
         var result = await controller.Start();
@@ -30,7 +32,14 @@ public class GameControllerTests
     {
         // Arrange
         var logger = A.Fake<ILogger<GameController>>();
-        var controller = new GameController(logger);
+        var engineFactory = new EngineFactory(
+            new StandardEngine(A.Fake<ILogger<StandardEngine>>()),
+            new RoyaleEngine(),
+            new ConstrictorEngine()
+            );
+        
+        var controller = new GameController(engineFactory, logger);
+        
         var game = A.Fake<Game>();
         game.Map = "standard";
         

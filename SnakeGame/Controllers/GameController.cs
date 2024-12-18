@@ -11,10 +11,12 @@ using Microsoft.AspNetCore.Mvc;
 public class GameController : ControllerBase
 {
     private readonly ILogger<GameController> logger;
+    private readonly EngineFactory engineFactory;
 
-    public GameController(ILogger<GameController> logger)
+    public GameController(EngineFactory engineFactory, ILogger<GameController> logger)
     {
         this.logger = logger;
+        this.engineFactory = engineFactory;
     }
     
     /// <summary>
@@ -49,7 +51,7 @@ public class GameController : ControllerBase
         logger.LogInformation("/move hit");
         
         // constructing the engine to use, using the map settings
-        var engine = EngineFactory.GetEngine(EngineType.parseEngineType(requestBody.Game.Map));
+        var engine = engineFactory.GetEngine(EngineType.parseEngineType(requestBody.Game.Map));
 
         var move = await engine.FindMove(requestBody.Game, requestBody.Turn, requestBody.Board, requestBody.You);
         

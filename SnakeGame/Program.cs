@@ -8,6 +8,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
+builder.Services.AddScoped<EngineFactory>();
+builder.Services.AddScoped<StandardEngine>();
+builder.Services.AddScoped<RoyaleEngine>();
+builder.Services.AddScoped<ConstrictorEngine>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
