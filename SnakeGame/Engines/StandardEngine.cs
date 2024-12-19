@@ -21,15 +21,19 @@ public class StandardEngine : IEngine
         var direction = GetRandomDirection(validDirections);
         
         logger.LogInformation($"Current position: {you.Head}");
+        logger.LogInformation($"Directions to choose from: {string.Join(", ", validDirections)}");
+        var attempts = 0;
         
         // checking if the new direction is out of bounds or if it's on the snake's body
-        while (direction != null && (board.IsOutOfBounds(you.Head + direction) || you.IsOnPosition(you.Head + direction)))
+        while (attempts < 10 && direction != null && (board.IsOutOfBounds(you.Head + direction) || you.IsOnPosition(you.Head + direction)))
         {
             // direction was not valid, remove from validDirections and try again!
             validDirections = validDirections.Where(d => d != direction);
             
-            logger.LogInformation($"direction {direction} was not valid!");
+            logger.LogInformation($"Direction {direction} was not valid, trying again!");
+            logger.LogInformation($"Directions to choose from: {string.Join(", ", validDirections)}");
             direction = GetRandomDirection(validDirections);
+            attempts++;
         }
 
         if (direction == null)
