@@ -21,17 +21,15 @@ public class StandardEngine : IEngine
         var direction = GetRandomDirection(validDirections);
         
         logger.LogInformation($"Current position: {you.Head}");
-        logger.LogInformation($"Directions to choose from: {string.Join(", ", validDirections)}");
         var attempts = 0;
         
         // checking if the new direction is out of bounds or if it's on the snake's body
         while (attempts < 10 && direction != null && (board.IsOutOfBounds(you.Head + direction) || you.IsOnPosition(you.Head + direction)))
         {
             // direction was not valid, remove from validDirections and try again!
-            validDirections = validDirections.Where(d => d != direction);
+            validDirections = validDirections.Where(d => d != direction).ToList();
             
             logger.LogInformation($"Direction {direction} was not valid, trying again!");
-            logger.LogInformation($"Directions to choose from: {string.Join(", ", validDirections)}");
             direction = GetRandomDirection(validDirections);
             attempts++;
         }
@@ -50,6 +48,7 @@ public class StandardEngine : IEngine
     
     private Direction? GetRandomDirection(IEnumerable<Direction> validDirections)
     {
+        logger.LogInformation($"Directions to choose from: {string.Join(", ", validDirections)}");
         return validDirections.ElementAt(RandomGenerator.Next(validDirections.Count()));
     }
 }
