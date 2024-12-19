@@ -18,22 +18,55 @@ public class StandardEngine : IEngine
     public async Task<Direction> FindMove(Game game, int turn, Board board, Snake you)
     {
         var validDirections = Board.ValidDirections;
-        var direction = GetRandomDirection(validDirections);
         
         logger.LogInformation($"Current position: {you.Head}");
         var attempts = 0;
         
-        // checking if the new direction is out of bounds or if it's on the snake's body
-        while (attempts < 10 && direction != null && (board.IsOutOfBounds(you.Head + direction) || you.IsOnPosition(you.Head + direction)))
+        // remove out of bounds directions
+        foreach (var d in validDirections)
         {
-            logger.LogInformation($"position {you.Head + direction} is out of bounds or on the snake's body, testing new direction");
-            // direction was not valid, remove from validDirections and try again!
-            validDirections = validDirections.Where(d => d != direction).ToList();
-            
-            logger.LogInformation($"Direction {direction}@{you.Head + direction} was not valid, trying again!");
-            direction = GetRandomDirection(validDirections);
-            attempts++;
+            if (board.IsOutOfBounds(you.Head + d))
+            {
+                validDirections = RemoveDirection(d, validDirections);
+            }
         }
+        
+        // remove directions that would hit self
+        foreach (var d in validDirections)
+        {
+            if (you.IsOnPosition(you.Head + d))
+            {
+                validDirections = RemoveDirection(d, validDirections);
+            }
+        }
+        
+        // remove directions that would hit other snake bodies
+        foreach (var snake in board.Snakes)
+        {
+            // skip self
+            if (snake.Id == you.Id)
+            {
+                continue;
+            }
+            
+            foreach (var d in validDirections)
+            {
+                if (snake.IsOnPosition(you.Head + d))
+                {
+                    validDirections = RemoveDirection(d, validDirections);
+                }
+            }
+        }
+        
+        logger.LogInformation($"Directions to choose from after checking self, outofbounds and other snakes have been removed: {string.Join(", ", validDirections)}");
+        
+        if (!validDirections.Any())
+        {
+            logger.LogWarning("No valid directions found, returning default direction Down");
+            return Direction.Down;
+        }
+        
+        var direction = GetRandomDirection(validDirections);
 
         if (direction == null)
         {
@@ -46,7 +79,13 @@ public class StandardEngine : IEngine
 
         return direction ?? Direction.Down; // this is just to keep the compiler happy
     }
-    
+
+    private static IEnumerable<Direction> RemoveDirection(Direction direction, IEnumerable<Direction> validDirections)
+    {
+        validDirections = validDirections.Where(d => d != direction).ToList();
+        return validDirections;
+    }
+
     private Direction? GetRandomDirection(IEnumerable<Direction> validDirections)
     {
         logger.LogInformation($"Directions to choose from: {string.Join(", ", validDirections)}");
