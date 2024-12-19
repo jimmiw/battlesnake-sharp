@@ -31,9 +31,9 @@ public class GameController : ControllerBase
             apiversion = "1",
             author = "jimmiw",
             // NOTE: use Customization?
-            color = "#FF7518",
+            color = "#f7ed57",
             head = "bee",
-            tail = "pumpkin",
+            tail = "bee",
             // NOTE-end
             version = "0.0.2"
         });
