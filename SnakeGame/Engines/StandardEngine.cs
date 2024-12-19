@@ -26,10 +26,11 @@ public class StandardEngine : IEngine
         // checking if the new direction is out of bounds or if it's on the snake's body
         while (attempts < 10 && direction != null && (board.IsOutOfBounds(you.Head + direction) || you.IsOnPosition(you.Head + direction)))
         {
+            logger.LogInformation($"position {you.Head + direction} is out of bounds or on the snake's body, testing new direction");
             // direction was not valid, remove from validDirections and try again!
             validDirections = validDirections.Where(d => d != direction).ToList();
             
-            logger.LogInformation($"Direction {direction} was not valid, trying again!");
+            logger.LogInformation($"Direction {direction}@{you.Head + direction} was not valid, trying again!");
             direction = GetRandomDirection(validDirections);
             attempts++;
         }
