@@ -22,9 +22,11 @@ public class SnakeTests
         // Act
         var result = snake.IsOnPosition(new Position(0, 0));
         var resultBody = snake.IsOnPosition(new Position(1, 0));
+        var resultOutsideSnake = snake.IsOnPosition(new Position(5, 0));
         
         // Assert
         Assert.True(result);
         Assert.True(resultBody);
+        Assert.False(resultOutsideSnake);
     }
 }

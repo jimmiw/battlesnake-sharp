@@ -10,7 +10,7 @@ public class Snake
     
     public int Health { get; set; }
     
-    public List<Position>? Body { get; set; } = [];
+    public List<Position> Body { get; set; } = [];
     
     public string? Latency { get; set; }
 
@@ -34,6 +34,6 @@ public class Snake
         }
 
         // checking the body last, as it's most intensive
-        return Body.Any(position => position == position);
+        return Body.Exists(p => p == position);
     }
 }
