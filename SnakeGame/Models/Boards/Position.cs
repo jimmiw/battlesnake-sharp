@@ -29,8 +29,8 @@ public class Position
     {
         return direction switch
         {
-            Up => new Position(a.X, a.Y - 1),
-            Down => new Position(a.X, a.Y + 1),
+            Up => new Position(a.X, a.Y + 1),
+            Down => new Position(a.X, a.Y - 1),
             Left => new Position(a.X - 1, a.Y),
             Right => new Position(a.X + 1, a.Y),
             _ => throw new ArgumentOutOfRangeException($"Given direction:{direction} is not valid")
