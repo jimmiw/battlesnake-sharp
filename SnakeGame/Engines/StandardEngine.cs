@@ -49,6 +49,12 @@ public class StandardEngine : IEngine
     private Direction? GetRandomDirection(IEnumerable<Direction> validDirections)
     {
         logger.LogInformation($"Directions to choose from: {string.Join(", ", validDirections)}");
+        
+        if (validDirections.Count() == 0)
+        {
+            return null;
+        }
+        
         return validDirections.ElementAt(RandomGenerator.Next(validDirections.Count()));
     }
 }
