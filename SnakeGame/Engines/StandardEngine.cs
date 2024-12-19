@@ -17,37 +17,35 @@ public class StandardEngine : IEngine
     
     public async Task<Direction> FindMove(Game game, int turn, Board board, Snake you)
     {
-        var direction = GetRandomDirection();
-        var maxAttempts = 10;
-        var attempts = 1;
+        var validDirections = Board.ValidDirections;
+        var direction = GetRandomDirection(validDirections);
         
         logger.LogInformation($"Current position: {you.Head}");
         
         // checking if the new direction is out of bounds or if it's on the snake's body
-        while (attempts < maxAttempts && (board.IsOutOfBounds(you.Head + direction) || you.IsOnPosition(you.Head + direction)))
+        while (direction != null && (board.IsOutOfBounds(you.Head + direction) || you.IsOnPosition(you.Head + direction)))
         {
+            // direction was not valid, remove from validDirections and try again!
+            validDirections = validDirections.Where(d => d != direction);
+            
             logger.LogInformation($"direction {direction} was not valid!");
-            direction = GetRandomDirection();
-            // decrement the number of attempts, so we don't get stuck in an infinite loop
-            attempts++;
+            direction = GetRandomDirection(validDirections);
         }
 
-        if (attempts == maxAttempts)
+        if (direction == null)
         {
-            logger.LogWarning("Could not find a valid direction after 10 attempts!");
-        }
-        else
-        {
-            logger.LogInformation($"Found direction:{direction} in {attempts} attempts");
+            logger.LogWarning("Could not find a valid direction");
+            // setting a default direction if none was found
+            direction = Direction.Down;
         }
         
-        logger.LogInformation($"New position: {you.Head + direction}");
-        
-        return direction;
+        logger.LogInformation($"New position: {you.Head + direction}, using direction:{direction}");
+
+        return direction ?? Direction.Down; // this is just to keep the compiler happy
     }
     
-    private Direction GetRandomDirection()
+    private Direction? GetRandomDirection(IEnumerable<Direction> validDirections)
     {
-        return Board.ValidDirections.ElementAt(RandomGenerator.Next(Board.ValidDirections.Count()));
+        return validDirections.ElementAt(RandomGenerator.Next(validDirections.Count()));
     }
 }

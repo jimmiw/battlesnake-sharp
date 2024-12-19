@@ -25,8 +25,14 @@ public class Position
     /// <summary>
     /// Use a direction to change a given position
     /// </summary>
-    public static Position operator +(Position a, Direction direction)
+    public static Position operator +(Position a, Direction? direction)
     {
+        // handle null direction
+        if (direction == null)
+        {
+            return a;
+        }
+        
         return direction switch
         {
             Up => new Position(a.X, a.Y + 1),
