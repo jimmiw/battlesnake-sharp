@@ -34,6 +34,6 @@ public class Snake
         }
 
         // checking the body last, as it's most intensive
-        return Body.Contains(position);
+        return Body.Any(position => position == position);
     }
 }
