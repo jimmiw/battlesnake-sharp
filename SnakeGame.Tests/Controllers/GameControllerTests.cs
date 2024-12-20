@@ -35,7 +35,7 @@ public class GameControllerTests
         // Arrange
         var logger = A.Fake<ILogger<GameController>>();
         var engineFactory = new EngineFactory(
-            new StandardEngine(),
+            new StandardEngine(A.Fake<ILogger<StandardEngine>>()),
             new RoyaleEngine(),
             new ConstrictorEngine()
             );

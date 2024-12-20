@@ -31,7 +31,7 @@ public class GameController : ControllerBase
             apiversion = "1",
             author = "jimmiw",
             // NOTE: use Customization?
-            color = "#f7ed57",
+            color = "#660000",
             head = "bee",
             tail = "bee",
             // NOTE-end

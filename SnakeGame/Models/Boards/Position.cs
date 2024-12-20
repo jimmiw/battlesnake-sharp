@@ -55,7 +55,7 @@ public class Position
 
     public override string ToString()
     {
-        return $"{X}, {Y}";
+        return $"{X},{Y}";
     }
     
     public IEnumerable<Position> GetAdjacentPositions()
@@ -87,5 +87,10 @@ public class Position
         }
         
         return Down;
+    }
+    
+    public int GetDistance(Position b)
+    {
+        return Math.Abs(X - b.X) + Math.Abs(Y - b.Y);
     }
 }

@@ -7,25 +7,18 @@ using Models.Snakes;
 
 public class StandardEngine : IEngine
 {
-    private static ILogger logger;
-    private static readonly Random RandomGenerator = new();
-
-    private static ILogger GetLogger()
+    private ILogger logger;
+    private readonly Random RandomGenerator = new();
+    private readonly PositionComparer PositionComparer = new();
+    
+    public StandardEngine(ILogger<StandardEngine> logger)
     {
-        if (logger != null)
-        {
-            return logger;
-        }
-        
-        var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-        logger = loggerFactory.CreateLogger(string.Empty);
-
-        return logger;
+        this.logger = logger;
     }
     
     public async Task<Direction> FindMove(Game game, int turn, Board board, Snake you)
     {
-        GetLogger().LogInformation($"Current position: {you.Head}");
+        logger.LogInformation($"Current position: {you.Head}");
 
         var safePostions = GetSafePostions(board, you.Head);
         var position = FindBestMove(safePostions, board, you);
@@ -33,13 +26,13 @@ public class StandardEngine : IEngine
         // this block is just for debugging purposes :)
         if (position is null)
         {
-            GetLogger().LogWarning("Could not find a safe position to move to, using random direction");
+            logger.LogWarning("Could not find a safe position to move to, using random direction");
         }
 
         // if no position was found, we will return a random position
         position ??= GetRandomPosition(you.Head, safePostions);
 
-        GetLogger().LogInformation($"New position: {position}, using direction:{you.Head.GetDirectionTo(position)}");
+        logger.LogInformation($"New position: {position}, using direction:{you.Head.GetDirectionTo(position)}");
         
         // returning the direction to move to
         return you.Head.GetDirectionTo(position);
@@ -48,7 +41,7 @@ public class StandardEngine : IEngine
     /// <summary>
     /// Finds a list of valid positions to move to, using the current board and the given snake
     /// </summary>
-    private static IEnumerable<Position> GetSafePostions(Board board, Position position)
+    private IEnumerable<Position> GetSafePostions(Board board, Position position)
     {
         var validDirections = Board.ValidDirections;
         
@@ -74,70 +67,90 @@ public class StandardEngine : IEngine
         }
         
         // TODO: check for hazards, e.g. walls
-        
-        GetLogger().LogInformation($"Directions to choose from after checking self, outofbounds and other snakes have been removed: {string.Join(", ", validDirections)}");
 
         // convert the directions to positions
         return validDirections.Select(d => (position + d)).ToList();
     }
 
-    private Position? FindBestMove(IEnumerable<Position> safePositions, Board board, Snake you)
+    public Position? FindBestMove(IEnumerable<Position> safePositions, Board board, Snake you)
     {
-        Position? destination = null;
+        Position? bestMove = null;
         
         // if the snake is in need of food, find food!
         // also, if the snake is too small, find food!
         if (you.Health <= 30 || you.Length < 10)
         {
-            GetLogger().LogInformation("Finding food! Health:{you.Health}, Length:{you.Length}");
+            logger.LogInformation($"Finding food! Health:{you.Health}, Length:{you.Length}");
             
-            destination = GetClosestFood(board.Food, you.Head);
+            bestMove = GetClosestFood(board.Food, you.Head);
             
             // since we need food now, we are returning fast!
-            if (destination is not null)
+            if (bestMove is not null)
             {
-                GetLogger().LogWarning("Food found at {destination} heading there now!");
-                var maxFoodDistance = Board.GetDistance(you.Head, destination);
+                var distanceToFood = Board.GetDistance(you.Head, bestMove);
                 // the max distance we want to move, when finding food is 20, so if the distance is greater, we will limit it
-                if (maxFoodDistance > 20)
+                if (distanceToFood > 20)
                 {
-                    maxFoodDistance = 20;
+                    distanceToFood = 20;
                 }
                 
-                destination = GetDirectionTowardsPosition(you.Head, destination, [], board, maxFoodDistance);
+                bestMove = GetMoveToDestination(you.Head, bestMove, [], board, distanceToFood);
+                logger.LogInformation($"Going towards food, next move is from {you.Head} to {bestMove}");
             }
         }
         
         // TODO: dominate middle?
         
         // TODO: attack other snakes?
+        
+        // TODO: Use floodfill to check for space, if we take the currently found move
+        // bestMove = GetSafeMove(bestMove, you.Head, board);
 
         // nothing to do, just return a random direction
-        return destination ?? GetRandomPosition(you.Head, safePositions);
+        return bestMove ?? GetRandomPosition(you.Head, safePositions);
     }
-    
+
+    private Position? GetSafeMove(Position? bestMove, Position youHead, Board board)
+    {
+        // if (bestMove is null)
+        // {
+        //     return null;
+        // }
+        //
+        // var safePositions = GetSafePostions(board, youHead);
+        // if (safePositions.Contains(bestMove.Value, PositionComparer))
+        // {
+        //     return bestMove;
+        // }
+        
+        return null;
+    }
+
     /// <summary>
     /// Finds the food closest to the given position
     /// </summary>
-    private static Position? GetClosestFood(IEnumerable<Position> food, Position currentPosition)
+    private Position? GetClosestFood(IEnumerable<Position> foodPositions, Position currentPosition)
     {
         Position? closestFood = null;
         int distance = int.MaxValue;
 
-        if (food == null || !food.Any())
+        if (foodPositions == null || !foodPositions.Any())
         {
+            logger.LogInformation("No food found");
             return null;
         }
         
-        foreach (var f in food)
+        foreach (var foodPosition in foodPositions)
         {
-            var d = Board.GetDistance(currentPosition, f);
-            if (d < distance)
+            var distanceToFood = Board.GetDistance(currentPosition, foodPosition);
+            if (distanceToFood < distance)
             {
-                distance = d;
-                closestFood = f;
+                distance = distanceToFood;
+                closestFood = foodPosition;
             }
         }
+        
+        logger.LogInformation($"Closest food found at {closestFood}, distance:{distance}");
         
         return closestFood;
     }
@@ -146,8 +159,9 @@ public class StandardEngine : IEngine
     /// Finds the direction towards the given position, using the list of valid directions only.
     /// We can use the given maxSteps to determine if we have "enough" moves left to reach the position.
     /// </summary>
-    private static Position? GetDirectionTowardsPosition(Position currentPosition, Position endPosition, IEnumerable<Position> route, Board board, int maxDepth)
+    private Position? GetMoveToDestination(Position currentPosition, Position endPosition, IEnumerable<Position> route, Board board, int maxDepth)
     {
+        logger.LogInformation($"GetMoveToDestination: {currentPosition} -> {endPosition}, maxDepth:{maxDepth}");
         // exit early, if max depth is reached
         if (maxDepth < 0)
         {
@@ -165,26 +179,34 @@ public class StandardEngine : IEngine
             return route.First();
         }
         
-        var adjacentPositions = currentPosition.GetAdjacentPositions();
+        var adjacentPositions = currentPosition.GetAdjacentPositions().ToList();
+        adjacentPositions = adjacentPositions.OrderBy(p => p.GetDistance(endPosition)).ToList();
+        
+        // if (adjacentPositions.Contains(endPosition, PositionComparer))
+        // {
+        //     return endPosition;
+        // }
 
         foreach (var possibleMove in adjacentPositions)
         {
+            var safePositions = GetSafePostions(board, currentPosition);
             // if the position is safe and not already in the route, we will add it to the route
-            if (GetSafePostions(board, possibleMove).Any() && ! route.Contains(possibleMove))
+            if (safePositions.Any() && ! route.Contains(possibleMove, PositionComparer))
             {
                 // adding the possbie move to the route (because we need this, to check if we are going back to the same position later on)
-                route.Append(possibleMove);
+                route = route.Append(possibleMove);
                 
                 // finding the next move, using the possible move as the new current position
-                var nextMove = GetDirectionTowardsPosition(possibleMove, endPosition, route, board, --maxDepth);
+                var nextMove = GetMoveToDestination(possibleMove, endPosition, route, board, maxDepth-1);
                 
                 // if we can't move further, we will remove the last position from the route
-                if (nextMove is null)
+                if (nextMove is null || ! safePositions.Contains(nextMove, PositionComparer))
                 {
-                    route.SkipLast(1);
+                    route = route.SkipLast(1);
                 }
                 else
                 {
+                    logger.LogInformation($"Next move found at {nextMove}");
                     return nextMove;
                 }
             }   
@@ -196,7 +218,7 @@ public class StandardEngine : IEngine
     /// <summary>
     /// Removes the given direction from the list of valid directions
     /// </summary>
-    private static IEnumerable<Direction> RemoveDirection(Direction direction, IEnumerable<Direction> validDirections)
+    private IEnumerable<Direction> RemoveDirection(Direction direction, IEnumerable<Direction> validDirections)
     {
         return validDirections.Where(d => d != direction).ToList();
     }
@@ -204,12 +226,15 @@ public class StandardEngine : IEngine
     /// <summary>
     /// Finds a random direction from the list of valid directions
     /// </summary>
-    private static Position GetRandomPosition(Position currentPosition, IEnumerable<Position> safePositions)
+    private Position GetRandomPosition(Position currentPosition, IEnumerable<Position> safePositions)
     {   
         if (! safePositions.Any())
         {
             return currentPosition + Direction.Down;
         }
+        // split the list of safe positions, so we can log the positions
+        
+        logger.LogInformation($"GetRandomPosition: {string.Join(", ", safePositions)} safe positions found");
         
         return safePositions.ElementAt(RandomGenerator.Next(safePositions.Count()));
     }
