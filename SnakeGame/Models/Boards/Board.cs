@@ -34,4 +34,9 @@ public class Board
     {
         return x < 0 || y < 0 || x >= width || y >= height;
     }
+    
+    public static int GetDistance(Position a, Position b)
+    {
+        return Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+    }
 }

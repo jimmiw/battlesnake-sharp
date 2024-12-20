@@ -13,7 +13,7 @@ public class StandardEngineTests
 
     public StandardEngineTests()
     {
-        _engine = new StandardEngine(A.Fake<ILogger<StandardEngine>>());
+        _engine = new StandardEngine();
     }
     
     [Fact]

@@ -57,4 +57,35 @@ public class Position
     {
         return $"{X}, {Y}";
     }
+    
+    public IEnumerable<Position> GetAdjacentPositions()
+    {
+        return new List<Position>
+        {
+            this + Up,
+            this + Down,
+            this + Left,
+            this + Right
+        };
+    }
+    
+    public Direction GetDirectionTo(Position other)
+    {
+        if (other.X > X)
+        {
+            return Right;
+        }
+        
+        if (other.X < X)
+        {
+            return Left;
+        }
+        
+        if (other.Y > Y)
+        {
+            return Up;
+        }
+        
+        return Down;
+    }
 }
