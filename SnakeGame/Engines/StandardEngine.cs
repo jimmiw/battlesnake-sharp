@@ -78,8 +78,8 @@ public class StandardEngine : IEngine
         
         // if the snake is in need of food, find food!
         // also, if the snake is too small, find food!
-        if (you.Health <= 30 || you.Length < 10)
-        {
+        // if (you.Health <= 30 || you.Length < 10)
+        // {
             logger.LogInformation($"Finding food! Health:{you.Health}, Length:{you.Length}");
             
             bestMove = GetClosestFood(board.Food, you.Head);
@@ -97,7 +97,7 @@ public class StandardEngine : IEngine
                 bestMove = GetMoveToDestination(you.Head, bestMove, [], board, distanceToFood);
                 logger.LogInformation($"Going towards food, next move is from {you.Head} to {bestMove}");
             }
-        }
+        // }
         
         // TODO: dominate middle?
         
