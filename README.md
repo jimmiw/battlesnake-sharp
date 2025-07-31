@@ -8,3 +8,8 @@ docker build -t battlesnake .
 docker stop battlesnake
 docker run -dit --rm --name battlesnake -p 5005:8080 battlesnake
 ```
+
+OR use docker compose:
+```bash
+docker-compose up
+```
