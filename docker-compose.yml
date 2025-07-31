@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  battlesnake:
+    image: battlesnake
+    container_name: battlesnake
+    ports:
+      - "5005:8080"
+    restart: unless-stopped
